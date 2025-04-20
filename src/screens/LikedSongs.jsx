@@ -1,8 +1,17 @@
-import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ScrollView,
+  useWindowDimensions,
+  Animated,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 
 import { SongInformationContext } from "../context/songInformationContext/SongInformationContext";
+import { LayoutContext } from "../context/uiContext/LayoutContext";
 
 import SearchBar from "../components/SearchBar";
 import SongContainer from "../components/SongContainer";
@@ -20,18 +29,42 @@ import {
   playSong,
   stopAndUnloadSound,
 } from "../utils/MusicPlayer";
-
 const LikedSongs = () => {
   const {
-    currentPlayingSong,
+    isMiniPlayerVisible,
     playbackStatus,
     songList,
     isSortModalVisible,
     isExpandedPlayerVisible,
     toggleExpandedPlayers,
     togglePlayback,
-    setplaybackStatus,
+    toggleMiniPlayer,
   } = useContext(SongInformationContext);
+
+  const {
+    showLikedSongsHeader,
+    toggleLikedSongsHeader,
+    showTogglePauseScrollButton,
+    togglePauseScrollButton,
+  } = useContext(LayoutContext);
+  const { height, width } = useWindowDimensions();
+
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  // This is for logging purposes
+  const handleScroll = (event) => {
+    scrollY.current = event.nativeEvent.contentOffset.y;
+    if (scrollY.current > 140) {
+      toggleLikedSongsHeader(true);
+    } else {
+      toggleLikedSongsHeader(false);
+    }
+    if (scrollY.current > 190) {
+      togglePauseScrollButton(true);
+    } else {
+      togglePauseScrollButton(false);
+    }
+  };
 
   // Whenever the user clicks on the song container
   const handleSongSelect = async (songInfo) => {
@@ -65,6 +98,8 @@ const LikedSongs = () => {
         await playSong(playbackStatus.currentSong);
       }
     }
+
+    toggleMiniPlayer(true);
   };
 
   const handleToggleSortModal = async () => {
@@ -73,13 +108,18 @@ const LikedSongs = () => {
 
   return (
     <>
-      <MiniPlayer />
-      <ScrollView>
+      {isMiniPlayerVisible && (
+        <MiniPlayer
+          onPressPlayback={handlePlayback}
+          onPressMiniPlayer={toggleExpandedPlayers}
+        />
+      )}
+
+      <Animated.ScrollView scrollEventThrottle={16} onScroll={handleScroll}>
         <StatusBar
           style="light"
           backgroundColor={isSortModalVisible ? "#121212" : "#101931"}
         />
-
         {isSortModalVisible && (
           <BottomSheet
             isModalVisible={isSortModalVisible}
@@ -112,7 +152,7 @@ const LikedSongs = () => {
             <Text style={styles.likedText}>Liked Songs</Text>
             <View style={styles.downLoadPlayContaier}>
               <View style={styles.downloadContainer}>
-                <Text style={styles.smallText}>705 songs</Text>
+                <Text style={styles.smallText}>{songList.length} songs</Text>
                 <MaterialCommunityIcons
                   name="download-circle-outline"
                   size={30}
@@ -136,7 +176,9 @@ const LikedSongs = () => {
             </View>
           </View>
 
-          <View style={styles.songsContainer}>
+          <View
+            style={{ ...styles.songsContainer, marginBottom: height * 0.15 }}
+          >
             {songList.map((eachSong) => (
               <SongContainer
                 songInfo={eachSong}
@@ -146,7 +188,7 @@ const LikedSongs = () => {
             ))}
           </View>
         </LinearGradient>
-      </ScrollView>
+      </Animated.ScrollView>
     </>
   );
 };
@@ -168,6 +210,7 @@ const styles = StyleSheet.create({
   linkedSongsPlaybuttonContainer: {
     height: "6%",
     width: "90%",
+    // borderWidth: 1,
   },
   downLoadPlayContaier: {
     display: "flex",
@@ -178,7 +221,7 @@ const styles = StyleSheet.create({
   songsContainer: {
     marginTop: 40,
     borderColor: "white",
-    marginBottom: 60,
+    // marginBottom: 60,
   },
   sortButton: {
     display: "flex",
@@ -208,7 +251,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: "27%",
+    width: "30%",
+    // borderWidth: 1,
   },
   linkedSongsPlaybutton: {
     width: 50,

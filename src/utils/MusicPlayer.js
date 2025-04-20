@@ -18,6 +18,8 @@ export async function pauseSong(sound) {
 }
 
 export async function playSong(sound) {
+  console.log(sound.currentTime, "here");
+
   if (sound) {
     await sound.playAsync();
     return true;

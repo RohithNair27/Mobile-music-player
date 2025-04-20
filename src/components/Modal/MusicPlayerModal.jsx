@@ -1,14 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Modal from "react-native-modal";
-import {
-  View,
-  Text,
-  Button,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-  Image,
-} from "react-native";
+import { View, Text, Pressable, StyleSheet, Image } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import Feather from "@expo/vector-icons/Feather";
@@ -19,7 +11,29 @@ import SeekBar from "../Ui/SeekBar";
 
 import { LinearGradient } from "expo-linear-gradient";
 
+import { pauseSong, playSong } from "../../utils/MusicPlayer";
+
+import { SongInformationContext } from "../../context/songInformationContext/SongInformationContext";
+
 const MusicPlayerModal = ({ toggleModal, isModalVisible, songInfo }) => {
+  const { playbackStatus, togglePlayback } = useContext(SongInformationContext);
+  const handlePlayBack = async () => {
+    if (playbackStatus.isPlaying) {
+      togglePlayback(
+        false,
+        playbackStatus.currentSong,
+        playbackStatus.currentPlayingSongData
+      );
+      await pauseSong(playbackStatus.currentSong);
+    } else {
+      togglePlayback(
+        true,
+        playbackStatus.currentSong,
+        playbackStatus.currentPlayingSongData
+      );
+      await playSong(playbackStatus.currentSong);
+    }
+  };
   return (
     <Modal
       isVisible={isModalVisible}
@@ -76,9 +90,16 @@ const MusicPlayerModal = ({ toggleModal, isModalVisible, songInfo }) => {
         <View style={styles.musicController}>
           <Ionicons name="shuffle-outline" size={30} color="#57B660" />
           <Ionicons name="caret-back-sharp" size={40} color="#ffff" />
-          <View style={styles.linkedSongsPlaybutton}>
-            <Ionicons name="play" size={24} color="black" />
-          </View>
+          <Pressable
+            style={styles.linkedSongsPlaybutton}
+            onPress={handlePlayBack}
+          >
+            {playbackStatus.isPlaying ? (
+              <Ionicons name="pause" size={24} color="black" />
+            ) : (
+              <Ionicons name="play" size={24} color="black" />
+            )}
+          </Pressable>
           <Ionicons name="caret-forward-sharp" size={40} color="#ffff" />
           <MaterialCommunityIcons
             name="timer-outline"
@@ -162,7 +183,7 @@ const styles = StyleSheet.create({
     // marginleft: 20,
   },
   musicController: {
-    // borderWidth: 1,
+    marginTop: 30,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",

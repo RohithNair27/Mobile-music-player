@@ -7,7 +7,7 @@ const SongInformationContextProvider = ({ children }) => {
   const [songList, setSongList] = useState(Songs);
   const [isSortModalVisible, setSortModalVisible] = useState(false);
   const [isExpandedPlayerVisible, setExpandedPlayerVisible] = useState(false);
-  const [isMiniPlayerVisible, setIsMiniPlayerVisible] = useState(true);
+  const [isMiniPlayerVisible, setIsMiniPlayerVisible] = useState(false);
 
   // currentSong is required for EXPO-AV
   const [playbackStatus, setplaybackStatus] = useState({
