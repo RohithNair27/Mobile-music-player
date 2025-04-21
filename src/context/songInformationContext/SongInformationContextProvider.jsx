@@ -43,6 +43,8 @@ const SongInformationContextProvider = ({ children }) => {
     });
   }
 
+  console.log(isSortModalVisible);
+
   return (
     <SongInformationContext.Provider
       value={{

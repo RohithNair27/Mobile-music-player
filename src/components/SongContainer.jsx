@@ -13,7 +13,13 @@ const SongContainer = ({ songInfo, onPress }) => {
       />
       <View style={styles.songInformationContainer}>
         <Text style={styles.songNameText}>{songInfo.title}</Text>
-        <Text style={styles.singerNameText}>{songInfo.artist}</Text>
+        <Text
+          style={styles.singerNameText}
+          ellipsizeMode={"tail"}
+          numberOfLines={1}
+        >
+          {songInfo.artist}
+        </Text>
       </View>
       <SimpleLineIcons name="options-vertical" size={18} color="white" />
     </Pressable>
@@ -37,10 +43,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   songNameText: {
+    fontSize: 15,
+
     color: "white",
   },
   singerNameText: {
-    color: "white",
+    fontSize: 13,
+    color: "#d3d3d3",
   },
 });
 export default SongContainer;

@@ -28,8 +28,8 @@ const StackNavigation = () => {
           elevation: 0,
           shadowOpacity: 0,
           borderBottomWidth: 0,
+          zIndex: 100,
         },
-        style: { overflow: "visible" },
         headerTintColor: "#ffff",
       }}
     >
@@ -47,10 +47,10 @@ const StackNavigation = () => {
               name="arrowleft"
               size={28}
               color="#ffff"
-              onPress={() => alert("This is a button!")}
               style={{ marginRight: 20 }}
             />
           ),
+
           headerRight: () => {
             return (
               showTogglePauseScrollButton && (
@@ -84,5 +84,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#57B660",
+    zIndex: 100,
   },
 });

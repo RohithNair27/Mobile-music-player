@@ -1,7 +1,7 @@
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import React from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
-const SearchBar = () => {
+const SearchBar = ({ onChange }) => {
   return (
     <View style={styles.searchBarContainer}>
       <AntDesign name="search1" size={22} color="white" />
@@ -9,6 +9,7 @@ const SearchBar = () => {
         style={styles.textInput}
         placeholder="Find in Liked Songs"
         placeholderTextColor="white"
+        onChangeText={onChange}
       />
     </View>
   );
@@ -18,7 +19,6 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     flexDirection: "row",
     alignItems: "center",
-    // borderWidth: 1,
     width: "78%",
     borderRadius: 5,
     paddingLeft: 7,

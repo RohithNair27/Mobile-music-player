@@ -43,11 +43,11 @@ const MiniPlayer = ({ onPressPlayback, onPressMiniPlayer }) => {
           resizeMode="contain"
           style={styles.image}
         />
-        <View>
+        <View style={styles.songInfoContainer}>
           <Text style={styles.headerText}>
             {playbackStatus?.currentPlayingSongData?.title}
           </Text>
-          <Text style={styles.singerNameText}>
+          <Text style={styles.singerNameText} numberOfLines={1}>
             {playbackStatus?.currentPlayingSongData?.artist}
           </Text>
         </View>
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "35%",
     justifyContent: "space-between",
+    // borderWidth: 1,
   },
   inLikedContainer: {
     width: 25,
@@ -121,5 +122,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#57B660",
+  },
+  songInfoContainer: {
+    // borderWidth: 1,
+    width: "45%",
   },
 });

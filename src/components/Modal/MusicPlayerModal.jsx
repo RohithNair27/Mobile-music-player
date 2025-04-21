@@ -42,6 +42,7 @@ const MusicPlayerModal = ({ toggleModal, isModalVisible, songInfo }) => {
       onBackButtonPress={toggleModal}
       useNativeDriverForBackdrop={true}
       hideModalContentWhileAnimating={true}
+      // swipeDirection={("left", "right")}
     >
       <StatusBar style="light" backgroundColor={songInfo?.artwork_bg_color} />
       <LinearGradient

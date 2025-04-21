@@ -39,19 +39,17 @@ const LikedSongs = () => {
     toggleExpandedPlayers,
     togglePlayback,
     toggleMiniPlayer,
+    toggleSortModal,
   } = useContext(SongInformationContext);
 
-  const {
-    showLikedSongsHeader,
-    toggleLikedSongsHeader,
-    showTogglePauseScrollButton,
-    togglePauseScrollButton,
-  } = useContext(LayoutContext);
-  const { height, width } = useWindowDimensions();
+  const { toggleLikedSongsHeader, togglePauseScrollButton } =
+    useContext(LayoutContext);
+  const { height } = useWindowDimensions();
 
-  const scrollY = useRef(new Animated.Value(0)).current;
+  const [searchButtonText, setSearchButtonText] = useState("");
 
   // This is for logging purposes
+  const scrollY = useRef(new Animated.Value(0)).current;
   const handleScroll = (event) => {
     scrollY.current = event.nativeEvent.contentOffset.y;
     if (scrollY.current > 140) {
@@ -59,7 +57,7 @@ const LikedSongs = () => {
     } else {
       toggleLikedSongsHeader(false);
     }
-    if (scrollY.current > 190) {
+    if (scrollY.current > 220) {
       togglePauseScrollButton(true);
     } else {
       togglePauseScrollButton(false);
@@ -103,8 +101,14 @@ const LikedSongs = () => {
   };
 
   const handleToggleSortModal = async () => {
-    setSortModalVisible(!isSortModalVisible);
+    toggleSortModal(!isSortModalVisible);
   };
+  const handleSearchBar = (text) => {
+    setSearchButtonText(text);
+  };
+  const filteredSongs = songList.filter((eachSong) =>
+    eachSong.title.includes(searchButtonText)
+  );
 
   return (
     <>
@@ -118,14 +122,13 @@ const LikedSongs = () => {
       <Animated.ScrollView scrollEventThrottle={16} onScroll={handleScroll}>
         <StatusBar
           style="light"
-          backgroundColor={isSortModalVisible ? "#121212" : "#101931"}
+          // backgroundColor={isSortModalVisible ? "#101931" : "#121212"}
         />
-        {isSortModalVisible && (
-          <BottomSheet
-            isModalVisible={isSortModalVisible}
-            toggleModal={handleToggleSortModal}
-          />
-        )}
+
+        <BottomSheet
+          isModalVisible={isSortModalVisible}
+          toggleModal={handleToggleSortModal}
+        />
 
         <MusicPlayerModal
           isModalVisible={isExpandedPlayerVisible}
@@ -136,10 +139,10 @@ const LikedSongs = () => {
         <LinearGradient
           colors={["#244196", "#121212"]}
           locations={[0, 0.2]}
-          style={styles.container}
+          style={{ ...styles.container }}
         >
           <View style={styles.inputContainer}>
-            <SearchBar />
+            <SearchBar onChange={handleSearchBar} />
             <Pressable
               style={styles.sortButton}
               onPress={handleToggleSortModal}
@@ -177,15 +180,28 @@ const LikedSongs = () => {
           </View>
 
           <View
-            style={{ ...styles.songsContainer, marginBottom: height * 0.15 }}
+            style={{
+              ...styles.songsContainer,
+              marginBottom: height * 0.15,
+              minHeight: height / 2,
+            }}
           >
-            {songList.map((eachSong) => (
-              <SongContainer
-                songInfo={eachSong}
-                key={eachSong.id}
-                onPress={handleSongSelect}
-              />
-            ))}
+            {filteredSongs.length > 0 ? (
+              filteredSongs.map((eachSong) => (
+                <SongContainer
+                  songInfo={eachSong}
+                  key={eachSong.id}
+                  onPress={handleSongSelect}
+                />
+              ))
+            ) : (
+              <View style={{ marginTop: 50, alignItems: "center" }}>
+                <Text style={styles.likedText}>No results found</Text>
+                <Text style={styles.smallText}>
+                  Check the spellings or try different keywords
+                </Text>
+              </View>
+            )}
           </View>
         </LinearGradient>
       </Animated.ScrollView>
@@ -239,7 +255,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   smallText: {
-    color: "#ffff",
+    color: "#D3D3D3",
   },
   downloadContainer: {
     height: "90%",

@@ -8,6 +8,7 @@ import {
   Pressable,
   StyleSheet,
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
 function BottomSheet({ toggleModal, isModalVisible }) {
   const sortOptions = ["Title", "Artist", "Album", "Recently Played"];
@@ -17,13 +18,16 @@ function BottomSheet({ toggleModal, isModalVisible }) {
       isVisible={isModalVisible}
       style={{ margin: 0 }}
       onBackdropPress={toggleModal}
+      useNativeDriver={false}
+      onBackButtonPress={toggleModal}
     >
+      <StatusBar style="light" backgroundColor={"#101931"} />
       <View style={styles.modalContainer}>
         <Text style={styles.headerText}>Sort by</Text>
         <ScrollView>
-          {sortOptions.map((element) => {
+          {sortOptions.map((element, index) => {
             return (
-              <Pressable style={styles.options}>
+              <Pressable style={styles.options} key={index}>
                 <Text style={styles.optionsText}>{element}</Text>
               </Pressable>
             );
