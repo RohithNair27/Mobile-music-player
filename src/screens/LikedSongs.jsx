@@ -65,39 +65,66 @@ const LikedSongs = () => {
   };
 
   // Whenever the user clicks on the song container
-  const handleSongSelect = async (songInfo) => {
+  const handleSongSelect = async (songInfo, index) => {
     toggleExpandedPlayers();
-    handlePlayback(songInfo);
+    await handlePlayback(songInfo, false, index);
   };
 
-  const handlePlayback = async (songInfo, pausedButton = false) => {
+  const handlePlayback = async (songInfo, pausedButton = false, index) => {
     if (!pausedButton) {
       //User selects new song - remove the old and add new song
       if (playbackStatus.isPlaying) {
         await stopAndUnloadSound(playbackStatus.currentSong);
       }
       const currentSong = await startPlayingSound(songInfo.mp4_link);
-      togglePlayback(true, currentSong, songInfo);
+      togglePlayback(true, currentSong, songInfo, index);
     } else {
       // toggle play and pause
       if (playbackStatus.isPlaying) {
         togglePlayback(
           false,
           playbackStatus.currentSong,
-          playbackStatus.currentPlayingSongData
+          playbackStatus.currentPlayingSongData,
+          playbackStatus.currentSongIndex
         );
         await pauseSong(playbackStatus.currentSong);
       } else {
         togglePlayback(
           true,
           playbackStatus.currentSong,
-          playbackStatus.currentPlayingSongData
+          playbackStatus.currentPlayingSongData,
+          playbackStatus.currentSongIndex
         );
         await playSong(playbackStatus.currentSong);
       }
     }
 
     toggleMiniPlayer(true);
+  };
+
+  const playNextSong = async () => {
+    // console.log(playbackStatus);
+    if (playbackStatus.currentSongIndex + 1 < songList.length - 1) {
+      let newIndex = playbackStatus.currentSongIndex + 1;
+      let nextSong = songList[newIndex];
+      await handlePlayback(nextSong, false, newIndex);
+    } else {
+      let newIndex = 1;
+      let nextSong = songList[newIndex];
+      await handlePlayback(nextSong, false, newIndex);
+    }
+  };
+  const playPrevSong = async () => {
+    // console.log(playbackStatus);
+    if (playbackStatus.currentSongIndex - 1 > 0) {
+      let newIndex = playbackStatus.currentSongIndex - 1;
+      let prevSong = songList[newIndex];
+      await handlePlayback(prevSong, false, newIndex);
+    } else {
+      let newIndex = songList.length - 1;
+      let prevSong = songList[newIndex];
+      await handlePlayback(prevSong, false, newIndex);
+    }
   };
 
   const handleToggleSortModal = async () => {
@@ -134,6 +161,8 @@ const LikedSongs = () => {
           isModalVisible={isExpandedPlayerVisible}
           toggleModal={toggleExpandedPlayers}
           songInfo={playbackStatus.currentPlayingSongData}
+          onPressPlayNext={playNextSong}
+          onPressPlayPrevious={playPrevSong}
         />
 
         <LinearGradient
@@ -187,11 +216,12 @@ const LikedSongs = () => {
             }}
           >
             {filteredSongs.length > 0 ? (
-              filteredSongs.map((eachSong) => (
+              filteredSongs.map((eachSong, index) => (
                 <SongContainer
                   songInfo={eachSong}
                   key={eachSong.id}
                   onPress={handleSongSelect}
+                  index={index}
                 />
               ))
             ) : (

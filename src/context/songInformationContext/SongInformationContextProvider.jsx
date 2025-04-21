@@ -14,6 +14,7 @@ const SongInformationContextProvider = ({ children }) => {
     isPlaying: false,
     currentSong: null,
     currentPlayingSongData: null,
+    currentSongIndex: null,
   });
 
   function toggleExpandedPlayers() {
@@ -26,11 +27,17 @@ const SongInformationContextProvider = ({ children }) => {
     setIsMiniPlayerVisible(state);
   }
 
-  function togglePlayback(playingState, currentSong, currentPlayingSongData) {
+  function togglePlayback(
+    playingState,
+    currentSong,
+    currentPlayingSongData,
+    currentSongIndex
+  ) {
     setplaybackStatus({
       isPlaying: playingState,
       currentSong: currentSong,
       currentPlayingSongData: currentPlayingSongData,
+      currentSongIndex: currentSongIndex,
     });
   }
 
@@ -42,8 +49,6 @@ const SongInformationContextProvider = ({ children }) => {
       };
     });
   }
-
-  console.log(isSortModalVisible);
 
   return (
     <SongInformationContext.Provider

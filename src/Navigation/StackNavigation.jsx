@@ -54,16 +54,18 @@ const StackNavigation = () => {
           headerRight: () => {
             return (
               showTogglePauseScrollButton && (
-                <Pressable
-                  style={styles.linkedSongsPlaybutton}
-                  // onPress={() => handlePlayback(playbackStatus, true)}
-                >
-                  {playbackStatus.isPlaying ? (
-                    <Ionicons name="pause" size={24} color="black" />
-                  ) : (
-                    <Ionicons name="play" size={24} color="black" />
-                  )}
-                </Pressable>
+                <View style={styles.buttonContainer}>
+                  <Pressable
+                    style={styles.linkedSongsPlaybutton}
+                    // onPress={() => handlePlayback(playbackStatus, true)}
+                  >
+                    {playbackStatus.isPlaying ? (
+                      <Ionicons name="pause" size={24} color="black" />
+                    ) : (
+                      <Ionicons name="play" size={24} color="black" />
+                    )}
+                  </Pressable>
+                </View>
               )
             );
           },
@@ -85,5 +87,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#57B660",
     zIndex: 100,
+    top: 20,
   },
 });

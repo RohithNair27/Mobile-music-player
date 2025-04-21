@@ -15,7 +15,13 @@ import { pauseSong, playSong } from "../../utils/MusicPlayer";
 
 import { SongInformationContext } from "../../context/songInformationContext/SongInformationContext";
 
-const MusicPlayerModal = ({ toggleModal, isModalVisible, songInfo }) => {
+const MusicPlayerModal = ({
+  toggleModal,
+  isModalVisible,
+  songInfo,
+  onPressPlayNext,
+  onPressPlayPrevious,
+}) => {
   const { playbackStatus, togglePlayback } = useContext(SongInformationContext);
   const handlePlayBack = async () => {
     if (playbackStatus.isPlaying) {
@@ -90,7 +96,9 @@ const MusicPlayerModal = ({ toggleModal, isModalVisible, songInfo }) => {
         <SeekBar />
         <View style={styles.musicController}>
           <Ionicons name="shuffle-outline" size={30} color="#57B660" />
-          <Ionicons name="caret-back-sharp" size={40} color="#ffff" />
+          <Pressable onPress={onPressPlayPrevious}>
+            <Ionicons name="caret-back-sharp" size={40} color="#ffff" />
+          </Pressable>
           <Pressable
             style={styles.linkedSongsPlaybutton}
             onPress={handlePlayBack}
@@ -101,7 +109,9 @@ const MusicPlayerModal = ({ toggleModal, isModalVisible, songInfo }) => {
               <Ionicons name="play" size={24} color="black" />
             )}
           </Pressable>
-          <Ionicons name="caret-forward-sharp" size={40} color="#ffff" />
+          <Pressable onPress={onPressPlayNext}>
+            <Ionicons name="caret-forward-sharp" size={40} color="#ffff" />
+          </Pressable>
           <MaterialCommunityIcons
             name="timer-outline"
             size={24}

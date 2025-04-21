@@ -1,33 +1,58 @@
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import React from "react";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
-
-const SongContainer = ({ songInfo, onPress }) => {
+import Entypo from "@expo/vector-icons/Entypo";
+const SongContainer = ({ songInfo, onPress, index }) => {
   return (
-    <Pressable style={styles.container} onPress={() => onPress(songInfo)}>
-      <Image
-        source={{
-          uri: songInfo.artwork,
-        }}
-        style={styles.Image}
-      />
-      <View style={styles.songInformationContainer}>
-        <Text style={styles.songNameText}>{songInfo.title}</Text>
-        <Text
-          style={styles.singerNameText}
-          ellipsizeMode={"tail"}
-          numberOfLines={1}
+    <>
+      {songInfo.mp4_link ? (
+        <Pressable
+          style={styles.container}
+          onPress={() => onPress(songInfo, index)}
         >
-          {songInfo.artist}
-        </Text>
-      </View>
-      <SimpleLineIcons name="options-vertical" size={18} color="white" />
-    </Pressable>
+          <Image
+            source={{
+              uri: songInfo.artwork,
+            }}
+            style={styles.Image}
+          />
+          <View style={styles.songInformationContainer}>
+            <Text style={styles.songNameText}>{songInfo.title}</Text>
+            <Text
+              style={styles.singerNameText}
+              ellipsizeMode={"tail"}
+              numberOfLines={1}
+            >
+              {songInfo.artist}
+            </Text>
+          </View>
+          <SimpleLineIcons name="options-vertical" size={18} color="white" />
+        </Pressable>
+      ) : (
+        <Pressable
+          style={{ ...styles.container, justifyContent: "flex-start" }}
+        >
+          <View
+            style={{
+              ...styles.Image,
+              alignItems: "center",
+              justifyContent: "center",
+              borderWidth: 1,
+              backgroundColor: "#808080",
+              marginRight: 10,
+            }}
+          >
+            <Entypo name="plus" size={30} color="#d3d3d3" />
+          </View>
+          <Text style={styles.songNameText}>{songInfo.title}</Text>
+        </Pressable>
+      )}
+    </>
   );
 };
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
+    // display: "flex",
     flexDirection: "row",
     padding: 5,
     justifyContent: "space-between",
